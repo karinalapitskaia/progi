@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>My Hemming Code </title>
+    <script>
+        function code() {
+            let inpText = document.getElementById('inpMessage').value;
+            inpText = inpText.split('');
+            let cb1 = (Number(inpText[0]) + Number(inpText[2]) + Number(inpText[3])) % 2;
+            let cb2 = (Number(inpText[2]) + Number(inpText[3]) + Number(inpText[1])) % 2;
+            let cb3 = (Number(inpText[0]) + Number(inpText[3]) + Number(inpText[1])) % 2;
+            document.getElementById('outputMessage').value = inpText.join('') + cb1 + cb2 + cb3;
+        }
+        function decode() {
+            let errors = "";
+            let errorsPlace1 = "";
+            let errorsPlace2 = "";
+            let errorsPlace3 = "";
+            let errorPlaceend = "";
+            let fix = document.getElementById('outputMessage').value;
+
+
+            if (((Number(fix[0]) + Number(fix[2]) + Number(fix[3]) + Number(fix[4])) % 2) != 0) {
+                errors += 1;
+                errorsPlace1 = 1;
+            }
+            if (((Number(fix[0]) + Number(fix[1]) + Number(fix[3]) + Number(fix[5])) % 2) != 0) {
+                errors += 1;
+                errorsPlace2 = 1;
+            }
+            if (((Number(fix[1]) + Number(fix[2]) + Number(fix[3]) + Number(fix[6])) % 2) != 0) {
+                errors += 1;
+                errorsPlace3 = 1;
+            }
+            if (errorsPlace1 = 1, errorsPlace2 = 1) {
+                errorPlaceend = 1
+                if (Number(fix[0]) == 1) {
+                    fix[0] = 0
+                }
+                else {
+                    fix[0] = 1
+                }
+            }
+            if (errorsPlace1 = 1, errorsPlace3 = 1) {
+                errorpPlaceend = 3
+                if (Number(fix[2]) == 1) {
+                    fix[2] = 0
+                }
+                else {
+                    fix[2] = 1
+                }
+            }
+
+            if (errorsPlace2 = 1, errorsPlace3 = 1) {
+                errorPlaceend = 2
+                if (Number(fix[1]) == 1) {
+                    fix[1] = 0
+                }
+                else {
+                    fix[1] = 1
+                }
+            }
+            if (errorsPlace1 = 1, errorsPlace2 = 1, errorsPlace3 = 1) {
+                errorPlaceend = 4
+                if (Number(fix[3]) == 1) {
+                    fix[3] = 0
+                }
+                else {
+                    fix[3] = 1
+                }
+            }
+
+            document.getElementById('finalMassage').value = fix[0] + fix[1] + fix[2] + fix[3];
+            if (errors >= 1) {
+                document.getElementById('errors').innerHTML = "Àn error was found " + errors + "under the number" + errorpPlaceend;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>
+        lapitskaya
+    </h1>
+    <p><input type="text" id="inpMessage" /> input message, 4 bits</p>
+    <p><input type="button" value='Code' onclick="code()" /></p>
+    <p><input type="text" id="outputMessage" /> Coded message</p>
+    <p><input type="button" value='Check' onclick="decode()"/></p>
+    <p><input type="text" id="finalMassage" /> Original message</p>
+    <p id='errors'></p>
+</body>
+</html>
+
