@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Game of Life</title>
+</head>
+
+<body>
+    <h1>by Karinochka</h1>
+    <canvas id="myCanvas" width="600" height="600"
+            style="border:1px solid grey;"></canvas>
+    <button onclick="init()">Init</button>
+    <button onclick="stop()">Stop</button>
+    <button onclick="run()">Run</button>
+    <button onclick="step()">Step</button>
+
+    <script>
+        const fieldSize = 30;
+        const celldSize = 20;
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#F00";
+        let field = new Array(fieldSize);
+        for (let i = 0; i < fieldSize; i++)
+            field[i] = new Array(fieldSize);
+
+        let nextField = new Array(fieldSize);
+        for (let i = 0; i < fieldSize; i++)
+            nextField[i] = new Array(fieldSize);
+
+        function neighborCount(r, c) {
+            let count = -field[r][c];
+            for (let i = -1; i <= 1; i++)
+                for (let j = -1; j <= 1; j++)
+                    count += field[(r + i + fieldSize) % fieldSize][(c + j + fieldSize) % fieldSize];
+            return count;
+        }
+
+        function nextGen() {
+            for (let i = 0; i < fieldSize; i++)
+                for (let j = 0; j < fieldSize; j++) {
+                    nextField[i][j] = field[i][j];
+                    if ((field[i][j] == 0) && (neighborCount(i, j) == 3)) {
+                        nextField[i][j] = 1;
+                    } else if ((field[i][j] == 1) &&
+                        ((neighborCount(i, j) < 2) || (neighborCount(i, j) > 3))) {
+                        nextField[i][j] = 0;
+                    }
+                }
+        }
+
+        function doStep() {
+            nextGen();
+            for (let i = 0; i < fieldSize; i++)
+                for (let j = 0; j < fieldSize; j++) {
+                    field[i][j] = nextField[i][j];
+                }
+            drawing();
+        }
+
+        function drawing() {
+            for (let i = 0; i < fieldSize; i++)
+                for (let j = 0; j < fieldSize; j++) {
+                    ctx.fillStyle = (field[i][j] == 1 ? "#4B0082" : "#FFF");
+                    ctx.fillRect(i * celldSize, j * celldSize, celldSize, celldSize);
+                }
+        }
+
+        function init() {
+            for (let i = 0; i < fieldSize; i++)
+                for (let j = 0; j < fieldSize; j++) {
+                    field[i][j] = (Math.random() > 0.5 ? 1 : 0);
+                }
+            drawing();
+        }
+
+        let running = false;
+        let intervalId = null;
+
+        function stop() {
+            if (running) {
+                clearInterval(intervalId);
+                running = false;
+            }
+        }
+
+        function run() {
+            if (!running) {
+                intervalId = setInterval(doStep, 100);
+                running = true;
+            }
+        }
+
+        function step() {
+            stop();
+            doStep();
+        }
+
+        init();
+
+    </script>
+    <style>
+        body {
+            font-family: ALGERIAN, sans-serif;
+            background-color: #d797ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+        }
+
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #9400D3;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>
